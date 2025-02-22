@@ -105,17 +105,17 @@ const BudgetTable = () => {
                 <table className="min-w-full">
                     <thead className="bg-blue-600 text-white">
                         <tr>
-                            <th className="px-6 py-3 text-left text-sm font-medium uppercase">Category</th>
-                            <th className="px-6 py-3 text-left text-sm font-medium uppercase">Amount</th>
-                            <th className="px-6 py-3 text-left text-sm font-medium uppercase">Actions</th>
+                            <th className="px-2 sm:px-6 py-3 text-left text-sm font-medium uppercase">Category</th>
+                            <th className="px-2 sm:px-6 py-3 text-left text-sm font-medium uppercase">Amount</th>
+                            <th className="px-2 sm:px-6 py-3 text-left text-sm font-medium uppercase">Actions</th>
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-200">
                         {budgets.map((budget) => (
                             <tr key={budget._id} className="hover:bg-gray-50">
-                                <td className="px-6 py-4 text-sm text-gray-800">{budget.category}</td>
-                                <td className="px-6 py-4 text-sm text-gray-800">${budget.amount}</td>
-                                <td className="px-6 py-4 text-sm text-gray-800">
+                                <td className="px-2 sm:px-6 py-4 text-sm text-gray-800">{budget.category}</td>
+                                <td className="px-2 sm:px-6 py-4 text-sm text-gray-800">${budget.amount}</td>
+                                <td className="px-2 sm:px-6 py-4 text-sm text-gray-800">
                                     {
                                         optionId === budget._id &&
                                         <div className='relative right-[70px] bottom-4 z-10'>

@@ -38,19 +38,16 @@ const updateBudget = async (req, res) => {
   }
 
   try {
-    // Find the budget by ID and update it
     const updatedBudget = await Budget.findByIdAndUpdate(
       budgetId,
       { category, amount },
-      { new: true } // Return the updated document
+      { new: true }
     );
 
-    // Check if the budget exists
     if (!updatedBudget) {
       return res.status(404).json({ message: "Budget not found" });
     }
 
-    // Return the updated budget
     res.status(200).json({
       message: "Budget updated successfully",
       data: { budget: updatedBudget },
@@ -63,21 +60,17 @@ const updateBudget = async (req, res) => {
 
 const deleteBudget = async (req, res) => {
   const { budgetId } = req.params;
-  const userId = req.user.id; // Assuming you have user authentication
+  const userId = req.user.id;
 
   try {
-    // Find the budget by ID and delete it
     const deletedBudget = await Budget.findByIdAndDelete(budgetId);
 
-    // Check if the budget exists
     if (!deletedBudget) {
       return res.status(404).json({ message: "Budget not found" });
     }
 
-    // Fetch the remaining budgets for the user
     const remainingBudgets = await Budget.find({ user: userId });
 
-    // Return the success message and remaining budgets
     res.status(200).json({
       message: "Budget deleted successfully",
       data: { budgets: remainingBudgets },

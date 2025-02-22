@@ -1,12 +1,20 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 const Navbar = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
+    const navigate = useNavigate()
+
     const toggleMenu = () => {
         setIsMenuOpen(!isMenuOpen);
     };
+
+    const handleLogout = (e) => {
+        localStorage.removeItem("authToken");
+        navigate("/login")
+    }
 
     return (
         <nav className="bg-blue-600 p-4 shadow-lg">
@@ -48,6 +56,7 @@ const Navbar = () => {
                     <Link to="/budget" className="text-white hover:text-blue-200">
                         Budgets
                     </Link>
+                    <button onClick={() => handleLogout()} className="block text-white py-2 px-4 hover:bg-blue-500">Logout</button>
                 </div>
             </div>
 
@@ -75,6 +84,7 @@ const Navbar = () => {
                     >
                         Budgets
                     </Link>
+                    <button onClick={() => handleLogout()} className="block text-white py-2 px-4 hover:bg-blue-500">Logout</button>
                 </div>
             )}
         </nav>

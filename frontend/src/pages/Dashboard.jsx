@@ -1,22 +1,43 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useState, useEffect, useMemo } from 'react';
+import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend, PieChart, Pie, Cell } from 'recharts';
+import toast from 'react-hot-toast';
+import { fetchTransactions } from '../databaseCall/fetchTransactions';
+import { fetchBudget } from '../databaseCall/fetchBudget';
+import Navbar from "../component/Navbar.jsx"
 import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
-import updateIncome from "../databaseCall/updateIncome";
-import { getIncome } from "../databaseCall/getIncome";
-import Navbar from "../component/Navbar";
-import toast from 'react-hot-toast';
+import { getIncome } from "../databaseCall/getIncome.js"
+import GetStart from "../component/GetStart.jsx"
 
-function Dashboard() {
+const Dashboard = () => {
+  const [transactions, setTransactions] = useState([]);
+  const [budgets, setBudgets] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [income, setIncome] = useState(0);
 
-  const navigate = useNavigate();
-
-  // Calculate current time only once when the component mounts
+  //  Calculate current time only once when the component mounts
   const currentTime = useMemo(() => Date.now() / 1000, []);
+
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const transactionsData = await fetchTransactions();
+        const budgetsData = await fetchBudget();
+        setTransactions(transactionsData || []);
+        setBudgets(budgetsData || []);
+        setLoading(false);
+      } catch (error) {
+        toast.error('Failed to fetch data');
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
 
   useEffect(() => {
     const token = localStorage.getItem("authToken");
-
     if (!token) {
       navigate("/login");
       return;
@@ -24,6 +45,7 @@ function Dashboard() {
 
     try {
       const decoded = jwtDecode(token);
+      const currentTime = Date.now() / 1000;
 
       if (decoded.exp < currentTime) {
         localStorage.removeItem("authToken");
@@ -31,19 +53,10 @@ function Dashboard() {
       }
     } catch (error) {
       console.error("Invalid token:", error);
+      localStorage.removeItem("authToken");
       navigate("/login");
     }
-  }, [navigate, currentTime]);
-
-  const handleSaveIncome = () => {
-    updateIncome(income)
-      .then((res) => {
-        toast.success("Income updated successfully")
-      })
-      .catch((error) => {
-        toast.success("Income updation failed, please try again")
-      })
-  };
+  }, [currentTime, navigate]);
 
   useEffect(() => {
     getIncome()
@@ -55,30 +68,157 @@ function Dashboard() {
       })
   }, [])
 
+  const [screenWidth, setScreenWidth] = useState(window.innerWidth)
+
+  useEffect(() => {
+    const handleResize = () => {
+      console.log("window.innerWidth: ", window.innerWidth);
+      setScreenWidth(window.innerWidth);
+    };
+
+    // Add event listener for window resize
+    window.addEventListener('resize', handleResize);
+
+    // Cleanup event listener on component unmount
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+
+  // Calculate total income and expenses
+  const totalIncome = transactions
+    .filter((t) => t.type === 'income')
+    .reduce((sum, t) => sum + t.amount, 0);
+
+  const totalExpenses = transactions
+    .filter((t) => t.type === 'expense')
+    .reduce((sum, t) => sum + t.amount, 0);
+
+  // Prepare data for charts
+  const spendingByCategory = transactions
+    .filter((t) => t.type === 'expense')
+    .reduce((acc, t) => {
+      acc[t.category] = (acc[t.category] || 0) + t.amount;
+      return acc;
+    }, {});
+
+  const chartData = Object.keys(spendingByCategory).map((category) => ({
+    name: category,
+    value: spendingByCategory[category],
+  }));
+
+  const COLORS = [
+    "#FF5733", // Vibrant orange
+    "#33FF57", // Bright lime green
+    "#3357FF", // Deep blue
+    "#FF33A1", // Hot pink
+    "#33FFF5", // Cyan-like blue
+    "#F5FF33", // Bright yellow
+    "#8A33FF", // Rich purple
+    "#33FF8A", // Mint green
+    "#FF338A", // Magenta pink
+    "#33A1FF", // Sky blue
+    "#FF8A33", // Warm orange
+    "#8AFF33", // Neon green
+    "#338AFF", // Medium blue
+    "#FF33F5", // Vivid pink
+    "#33FF33", // Pure green
+    "#F533FF", // Bright purple
+    "#33F5FF", // Light teal
+    "#FF3333", // Bold red
+    "#3333FF", // Classic blue
+    "#FFFF33", // Lemon yellow
+  ];
+
+  if (loading) {
+    return <p>Loading...</p>;
+  }
 
   return (
     <>
-      <Navbar />
+      {
+        income == 0 ?
+          <GetStart income={income} setIncome={setIncome} />
+          :
+          <div>
+            <Navbar />
+            <div className="p-6 bg-gray-100 min-h-screen">
+              <h1 className="text-3xl font-bold text-gray-800 mb-6">Dashboard</h1>
 
-      <div className="mb-6 p-4 bg-yellow-100 rounded-lg">
-        <h2 className="text-lg font-semibold mb-2">Set Your Monthly Income</h2>
-        <input
-          type="number"
-          placeholder="Enter your monthly income"
-          value={income}
-          onChange={(e) => setIncome(e.target.value)}
-          className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-        />
-        <button
-          onClick={handleSaveIncome}
-          className="mt-2 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-        >
-          Save Income
-        </button>
-      </div>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 mb-6">
+                <div className="bg-white p-6 rounded-lg shadow-md">
+                  <h2 className="text-xl font-semibold text-gray-700">Total Income</h2>
+                  <p className="text-2xl font-bold text-green-600">${totalIncome}</p>
+                </div>
+                <div className="bg-white p-6 rounded-lg shadow-md">
+                  <h2 className="text-xl font-semibold text-gray-700">Total Expenses</h2>
+                  <p className="text-2xl font-bold text-red-600">${totalExpenses}</p>
+                </div>
+                <div className="bg-white p-6 rounded-lg shadow-md">
+                  <h2 className="text-xl font-semibold text-gray-700">Net Balance</h2>
+                  <p className="text-2xl font-bold text-blue-600">${income + totalIncome - totalExpenses}</p>
+                </div>
+                <div className="bg-white p-6 rounded-lg shadow-md">
+                  <h2 className="text-xl font-semibold text-gray-700">Monthly salary</h2>
+                  <p className="text-2xl font-bold text-blue-600">${income}</p>
+                </div>
+              </div>
 
+              {/* Charts */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                <div className="bg-white p-6 rounded-lg shadow-md">
+                  <h2 className="text-xl font-semibold text-gray-700 mb-4">Spending by Category</h2>
+                  <div className='flex justify-center items-center'>
+                    <PieChart width={400} height={screenWidth > 450 ? 350 : 300}>
+                      <Pie
+                        data={chartData}
+                        cx="50%"
+                        cy="50%"
+                        outerRadius={screenWidth > 450 ? 125 : 100}
+                        fill="#8884d8"
+                        dataKey="value"
+                        label
+                      >
+                        {chartData.map((entry, index) => (
+                          <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                        ))}
+                      </Pie>
+                      <Tooltip />
+                      <Legend
+                        layout="horizontal" // Display legend items horizontally
+                        wrapperStyle={{
+                          display: 'flex', // Use flexbox for layout
+                          flexWrap: 'wrap', // Allow wrapping of legend items
+                          justifyContent: 'center', // Center the legend items
+                          width: '100%', // Ensure the legend takes full width
+                          maxWidth: '300px', // Limit the maximum width of the legend
+                          margin: '0 auto', // Center the legend horizontally
+                        }}
+                        formatter={(value, entry, index) => (
+                          <span style={{ width: '33%', textAlign: 'center' }}>
+                            {value} {/* Display the legend item */}
+                          </span>
+                        )}
+                      />
+                    </PieChart>
+                  </div>
+                </div>
+                <div className="bg-white p-6 rounded-lg shadow-md">
+                  <h2 className="text-xl font-semibold text-gray-700 mb-4">Income vs Expenses vs Net balance</h2>
+                  <BarChart width={screenWidth > 450 ? 400 : screenWidth - 100} height={300} data={[{ name: 'Income', value: totalIncome }, { name: 'Expense', value: totalExpenses }, { name: 'Net balance', value: totalIncome - totalExpenses }]} >
+                    <XAxis dataKey="name" />
+                    <YAxis />
+                    <Tooltip />
+                    <Legend />
+                    <Bar dataKey="value" fill="#8884d8" barSize={40} />
+                  </BarChart>
+                </div>
+              </div>
+            </div>
+          </div>
+      }
     </>
-  )
-}
+  );
+};
 
 export default Dashboard;

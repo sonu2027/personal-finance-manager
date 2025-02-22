@@ -1,8 +1,8 @@
-const fetchTransaction = async () => {
+const fetchTransactions = async () => {
   const token = localStorage.getItem("authToken");
 
   if (!token) {
-    return;
+    throw new Error("Authentication token is missing");
   }
 
   try {
@@ -18,17 +18,17 @@ const fetchTransaction = async () => {
       }
     );
 
-    console.log("Reasponse: ", response);
-
-    let data;
-    if (response) {
-      data = await response.json();
-      return data.data.transactions;
+    if (!response.ok) {
+      throw new Error(`Failed to fetch transaction: ${response.statusText}`);
     }
-    throw error;
+
+    const responseData = await response.json();
+    console.log("responseData", responseData);
+    
+    return responseData.transactions;
   } catch (error) {
     throw error;
   }
 };
 
-export { fetchTransaction };
+export { fetchTransactions };
