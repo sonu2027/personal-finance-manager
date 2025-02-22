@@ -9,10 +9,11 @@ import { fetchBudget } from '../databaseCall/fetchBudget';
 
 const TransactionTable = () => {
     const [transactions, setTransactions] = useState([]);
+    const [budgets, setBudgets] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [newTransaction, setNewTransaction] = useState({
         description: '',
-        amount: '',
+        amount: 0,
         type: 'expense',
         category: '',
         date: new Date().toISOString().split('T')[0],
@@ -25,6 +26,10 @@ const TransactionTable = () => {
         fetchTransactions()
             .then((res) => {
                 setTransactions(res);
+                return fetchBudget()
+            })
+            .then((res) => {
+                setBudgets(res);
             })
             .catch((error) => {
                 toast.error('Failed to fetch transactions');
@@ -33,6 +38,7 @@ const TransactionTable = () => {
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
+
         if (editTransaction) {
             setEditTransaction({ ...editTransaction, [name]: value });
         } else {
@@ -44,6 +50,17 @@ const TransactionTable = () => {
         e.preventDefault();
 
         if (editTransaction) {
+
+            if (editTransaction.description.length > 200) {
+                toast.error("Description should be in less than 200 character")
+                return
+            }
+
+            if (editTransaction.amount < 1) {
+                toast.error('Transaction amount should be a valid number greater than 0');
+                return;
+            }
+
             updateTransaction({
                 transactionId: editTransaction._id,
                 description: editTransaction.description,
@@ -64,31 +81,67 @@ const TransactionTable = () => {
                     toast.error('Transaction updation failed!');
                 });
         } else {
+
+            if (newTransaction.description.length > 200) {
+                toast.error("Description should be in less than 200 character")
+                return
+            }
+
+            console.log(typeof newTransaction.amount);
+
+            if (newTransaction.amount < 1) {
+                toast.error('Transaction amount should be a valid number greater than 0');
+                return;
+            }
+
             if (newTransaction.category == "") {
                 newTransaction.category = category[0]
             }
+
             createTransaction({ ...newTransaction })
                 .then((res) => {
                     setTransactions([...transactions, res]);
                     toast.success('Transaction added successfully!');
+
+                    let tempTransaction = [...transactions, res]
+                    let transaction = 0
+                    let budget = 0
+
+                    tempTransaction.map((e) => {
+                        if (e.category == newTransaction.category) {
+                            transaction += e.amount
+                        }
+                    })
+
+                    budgets.map((e) => {
+                        if (e.category == newTransaction.category) {
+                            budget += e.amount
+                        }
+                    })
+
+                    let transactionLimit = (budget * 80) / 100
+
+                    if (transactionLimit < transaction) {
+                        alert("You are spending near the budget!")
+                    }
+
                 })
                 .catch((error) => {
                     toast.error('Transaction not added, please try again');
                 });
         }
 
-        setIsModalOpen(false); // Close the modal
+        setIsModalOpen(false);
         setNewTransaction({
             description: '',
             amount: '',
             type: 'expense',
             category: '',
             date: new Date().toISOString().split('T')[0],
-        }); // Reset form
-        setEditTransaction(null); // Reset edit mode
+        });
+        setEditTransaction(null);
     };
 
-    // Handle edit button click
     const handleEdit = (transaction) => {
         setEditTransaction(transaction);
         setIsModalOpen(true);
@@ -130,8 +183,6 @@ const TransactionTable = () => {
     return (
         <div className="p-6 bg-gray-100 min-h-screen">
             <h2 className="text-2xl font-bold text-gray-800 mb-6">Transactions</h2>
-
-            {/* Add Transaction Button */}
             <button
                 onClick={() => setIsModalOpen(true)}
                 className="mb-6 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
@@ -139,7 +190,6 @@ const TransactionTable = () => {
                 Add Transaction
             </button>
 
-            {/* Transaction Table */}
             <div className="overflow-x-auto bg-white rounded-lg shadow-md">
                 <table className="min-w-full">
                     <thead className="bg-blue-600 text-white">
@@ -203,7 +253,6 @@ const TransactionTable = () => {
                 </table>
             </div>
 
-            {/* Add/Edit Transaction Modal */}
             {isModalOpen && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
                     <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
@@ -251,16 +300,6 @@ const TransactionTable = () => {
                                     category.map((e) => <option key={e} value={e}>{e}</option>)
                                 }
                             </select>
-
-                            {/* <input
-                                type="text"
-                                name="category"
-                                placeholder="Category"
-                                value={editTransaction ? editTransaction.category : newTransaction.category}
-                                onChange={handleInputChange}
-                                className="w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                                required
-                            /> */}
 
                             <input
                                 type="date"

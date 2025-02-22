@@ -8,12 +8,14 @@ import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
 import { getIncome } from "../databaseCall/getIncome.js"
 import GetStart from "../component/GetStart.jsx"
+import UpdateIncome from '../component/UpdateIncome.jsx';
 
 const Dashboard = () => {
   const [transactions, setTransactions] = useState([]);
   const [budgets, setBudgets] = useState([]);
   const [loading, setLoading] = useState(true);
   const [income, setIncome] = useState(0);
+  const [openIncomeUpdate, setOpenIncomeUpdate] = useState(false)
 
   //  Calculate current time only once when the component mounts
   const currentTime = useMemo(() => Date.now() / 1000, []);
@@ -66,7 +68,7 @@ const Dashboard = () => {
       .catch((error) => {
 
       })
-  }, [])
+  }, [openIncomeUpdate])
 
   const [screenWidth, setScreenWidth] = useState(window.innerWidth)
 
@@ -76,7 +78,6 @@ const Dashboard = () => {
       setScreenWidth(window.innerWidth);
     };
 
-    // Add event listener for window resize
     window.addEventListener('resize', handleResize);
 
     // Cleanup event listener on component unmount
@@ -85,7 +86,7 @@ const Dashboard = () => {
     };
   }, []);
 
-  // Calculate total income and expenses
+  // Calculating total income and expenses
   const totalIncome = transactions
     .filter((t) => t.type === 'income')
     .reduce((sum, t) => sum + t.amount, 0);
@@ -141,7 +142,10 @@ const Dashboard = () => {
           <GetStart income={income} setIncome={setIncome} />
           :
           <div>
-            <Navbar />
+            <Navbar setOpenIncomeUpdate={setOpenIncomeUpdate} />
+            {
+              openIncomeUpdate && <UpdateIncome setOpenIncomeUpdate={setOpenIncomeUpdate}/>
+            }
             <div className="p-6 bg-gray-100 min-h-screen">
               <h1 className="text-3xl font-bold text-gray-800 mb-6">Dashboard</h1>
 
@@ -205,7 +209,7 @@ const Dashboard = () => {
                 </div>
                 <div className="bg-white p-6 rounded-lg shadow-md">
                   <h2 className="text-xl font-semibold text-gray-700 mb-4">Income vs Expenses vs Net balance</h2>
-                  <BarChart width={screenWidth > 450 ? 400 : screenWidth - 100} height={300} data={[{ name: 'Income', value: totalIncome }, { name: 'Expense', value: totalExpenses }, { name: 'Net balance', value: totalIncome - totalExpenses }]} >
+                  <BarChart width={screenWidth > 450 ? 400 : screenWidth - 100} height={300} data={[{ name: 'Income', value: totalIncome }, { name: 'Expense', value: totalExpenses }, { name: 'Net balance', value: income + totalIncome - totalExpenses }]} >
                     <XAxis dataKey="name" />
                     <YAxis />
                     <Tooltip />

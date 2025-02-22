@@ -36,6 +36,17 @@ const BudgetTable = () => {
         e.preventDefault();
 
         if (editBudget) {
+
+            if (editBudget.category.length > 30) {
+                toast.error("Category should be have less than 30 character")
+                return
+            }
+
+            if (editBudget.amount < 1) {
+                toast.error('Transaction amount should be a valid number greater than 0');
+                return;
+            }
+
             updateBudget({ budgetId: editBudget._id, category: editBudget.category, amount: editBudget.amount })
                 .then((res) => {
                     setBudgets(
@@ -49,6 +60,17 @@ const BudgetTable = () => {
                     toast.error('Budget updation failed!');
                 })
         } else {
+
+            if (newBudget.category.length > 30) {
+                toast.error("Category should be have less than 30 character")
+                return
+            }
+
+            if ( newBudget.amount < 1) {
+                toast.error('Budget amount should be a valid number greater than 0');
+                return;
+            }
+
             createBudget({ ...newBudget })
                 .then((res) => {
                     setBudgets([...budgets, res]);
@@ -59,9 +81,9 @@ const BudgetTable = () => {
                 })
         }
 
-        setIsModalOpen(false); // close the modal
-        setNewBudget({ category: '', amount: '' }); // Reset form
-        setEditBudget(null); // Reset edit mode
+        setIsModalOpen(false); 
+        setNewBudget({ category: '', amount: '' }); 
+        setEditBudget(null); 
     };
 
     // Handle edit button click

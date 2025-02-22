@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 
-const Navbar = () => {
+const Navbar = ({ setOpenIncomeUpdate }) => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
     const navigate = useNavigate()
@@ -19,7 +19,6 @@ const Navbar = () => {
     return (
         <nav className="bg-blue-600 p-4 shadow-lg">
             <div className="container mx-auto flex justify-between items-center">
-                {/* Logo/Brand */}
                 <Link to="/dashboard" className="text-white text-2xl font-bold">
                     Personal Finance Manager
                 </Link>
@@ -56,7 +55,8 @@ const Navbar = () => {
                     <Link to="/budget" className="text-white hover:text-blue-200">
                         Budgets
                     </Link>
-                    <button onClick={() => handleLogout()} className="block text-white py-2 px-4 hover:bg-blue-500">Logout</button>
+                    <button onClick={() => setOpenIncomeUpdate(true)} className="block text-white px-4 hover:bg-blue-500">Update salary</button>
+                    <button onClick={() => handleLogout()} className="block text-white px-4 hover:bg-blue-500">Logout</button>
                 </div>
             </div>
 
@@ -84,6 +84,7 @@ const Navbar = () => {
                     >
                         Budgets
                     </Link>
+                    <button onClick={() => setOpenIncomeUpdate(true)} className="block text-white px-4 hover:bg-blue-500">Update salary</button>
                     <button onClick={() => handleLogout()} className="block text-white py-2 px-4 hover:bg-blue-500">Logout</button>
                 </div>
             )}

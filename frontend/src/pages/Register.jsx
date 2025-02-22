@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router-dom';
+import * as Yup from 'yup';
 import registerUser from '../databaseCall/registerUser';
 import sendEmailVerificationOTP from '../databaseCall/sendEmailVerificationOTP';
 
 const Register = () => {
-
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
     fullName: '',
@@ -15,13 +15,26 @@ const Register = () => {
     confirmPassword: '',
   });
 
-  const [OTP, setOTP] = useState("")
-  const [otp, setotp] = useState("")
+  const [OTP, setOTP] = useState('');
+  const [otp, setOtp] = useState('');
+
+  // Validation schema using Yup
+  const validationSchema = Yup.object().shape({
+    fullName: Yup.string()
+      .required('Full Name is required')
+      .min(3, 'Full Name must be at least 3 characters'),
+    email: Yup.string()
+      .email('Invalid email address')
+      .required('Email is required'),
+    password: Yup.string()
+      .required('Password is required')
+      .min(8, 'Password must be at least 8 characters'),
+    confirmPassword: Yup.string()
+      .oneOf([Yup.ref('password'), null], 'Passwords must match')
+      .required('Confirm Password is required'),
+  });
 
   const handleChange = (e) => {
-    if (OTP.length == 4) {
-      return
-    }
     const { name, value } = e.target;
     setFormData({
       ...formData,
@@ -29,44 +42,51 @@ const Register = () => {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (formData.password !== formData.confirmPassword) {
-      toast.error('Passwords do not match');
-      return;
+
+    try {
+      // Validate the form data
+      await validationSchema.validate(formData, { abortEarly: false });
+
+      if (formData.password !== formData.confirmPassword) {
+        toast.error('Passwords do not match');
+        return;
+      }
+
+      const generatedOTP = await sendEmailVerificationOTP(formData.email);
+      toast.success('OTP successfully sent to your email');
+      setOTP(String(generatedOTP));
+    } catch (error) {
+      if (error.inner) {
+        error.inner.forEach((err) => {
+          toast.error(err.message);
+        });
+      } else {
+        toast.error('Error while sending OTP');
+      }
     }
-    if (formData.password.length < 8) {
-      toast.error('Password should be atleast 8 character');
-      return;
-    }
-    sendEmailVerificationOTP(formData.email)
-      .then((OTP) => {
-        console.log("OTP is: ", OTP);
-        toast.success("OTP successfully sent to your email")
-        const newOtp = String(OTP)
-        setOTP(newOtp)
-      })
-      .catch((error) => {
-        console.log("Error while sending otp: ", error)
-        toast.error("Error while sending otp!")
-      })
   };
 
   useEffect(() => {
-    if (otp.length == 4 && otp == OTP) {
-      registerUser({ fullName: formData.fullName, email: formData.email, password: formData.password })
-        .then((res) => {
-          toast.success("Registartion successfull")
+    if (otp.length === 4 && otp === OTP) {
+      registerUser({
+        fullName: formData.fullName,
+        email: formData.email,
+        password: formData.password,
+      })
+        .then(() => {
+          toast.success('Registration successful');
           setTimeout(() => {
-            navigate("/login")
-          }, 2000)
+            navigate('/login');
+          }, 2000);
         })
         .catch((error) => {
-          console.log("Error while Registartion is: ", error)
-          toast.error("Registartion failed")
-        })
+          console.error('Error during registration:', error);
+          toast.error('Registration failed');
+        });
     }
-  }, [otp])
+  }, [otp, OTP, formData, navigate]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
@@ -90,6 +110,7 @@ const Register = () => {
               required
             />
           </div>
+
           <div className="mb-4">
             <label htmlFor="email" className="block text-sm font-medium text-gray-700">
               Email
@@ -105,6 +126,7 @@ const Register = () => {
               required
             />
           </div>
+
           <div className="mb-4">
             <label htmlFor="password" className="block text-sm font-medium text-gray-700">
               Password
@@ -120,6 +142,7 @@ const Register = () => {
               required
             />
           </div>
+
           <div className="mb-4">
             <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">
               Confirm Password
@@ -135,21 +158,12 @@ const Register = () => {
               required
             />
           </div>
-          {
-            OTP.length == 4 && <div className="mb-6">
+
+          {OTP.length === 4 && (
+            <div className="mb-6">
               <label htmlFor="otp" className="block text-sm font-medium text-gray-700">
                 OTP
               </label>
-              {/* <input
-                type="text"
-                id="otp"
-                name="otp"
-                placeholder="Enter OTP"
-                value={otp}
-                onChange={(e) => setotp(e.target.value)}
-                className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                required
-              /> */}
               <input
                 type="text"
                 id="otp"
@@ -158,23 +172,30 @@ const Register = () => {
                 value={otp}
                 onChange={(e) => {
                   const value = e.target.value;
-                  // Ensure the value is exactly 4 characters long
                   if (value.length <= 4) {
-                    setotp(value);
+                    setOtp(value);
                   }
                 }}
-                maxLength={4} // Ensures the input cannot exceed 4 characters
+                maxLength={4}
                 className="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 required
               />
             </div>
-          }
-          <div className='mb-6'>
-            <div className='flex gap-x-2'>
+          )}
+
+          <div className="mb-6">
+            <div className="flex gap-x-2">
               <div>Have an account?</div>
-              <button className='text-blue-700 font-medium' onClick={() => navigate("/login")}>Login</button>
+              <button
+                type="button"
+                className="text-blue-700 font-medium"
+                onClick={() => navigate('/login')}
+              >
+                Login
+              </button>
             </div>
           </div>
+
           <button
             type="submit"
             className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
