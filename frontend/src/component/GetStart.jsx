@@ -13,6 +13,10 @@ const IncomeModal = ({ income, setIncome }) => {
     const navigate = useNavigate()
 
     const handleSaveIncome = () => {
+        if(monthlyIncome<1 || monthlyIncome>10000000){
+            toast.error("Income should be between 1 and 10000000")
+            return
+        }
         updateIncome(monthlyIncome)
             .then((res) => {
                 setIncome(monthlyIncome)

@@ -46,17 +46,17 @@ const Navbar = ({ setOpenIncomeUpdate }) => {
 
                 {/* Desktop Menu */}
                 <div className="hidden lg:flex space-x-6">
-                    <Link to="/dashboard" className="text-white hover:text-blue-200">
+                    <Link to="/dashboard" className="text-white font-medium hover:text-blue-200">
                         Dashboard
                     </Link>
-                    <Link to="/transaction" className="text-white hover:text-blue-200">
+                    <Link to="/transaction" className="text-white font-medium hover:text-blue-200">
                         Transactions
                     </Link>
-                    <Link to="/budget" className="text-white hover:text-blue-200">
+                    <Link to="/budget" className="text-white font-medium hover:text-blue-200">
                         Budgets
                     </Link>
-                    <button onClick={() => setOpenIncomeUpdate(true)} className="block text-white px-4 hover:bg-blue-500">Update salary</button>
-                    <button onClick={() => handleLogout()} className="block text-white px-4 hover:bg-blue-500">Logout</button>
+                    <button onClick={() => setOpenIncomeUpdate(true)} className="block text-white font-medium px-4 hover:bg-blue-500">Update salary</button>
+                    <button onClick={() => handleLogout()} className="block text-white font-medium px-4 hover:bg-blue-500">Logout</button>
                 </div>
             </div>
 
@@ -65,27 +65,27 @@ const Navbar = ({ setOpenIncomeUpdate }) => {
                 <div className="lg:hidden mt-4">
                     <Link
                         to="/dashboard"
-                        className="block text-white py-2 px-4 hover:bg-blue-500"
+                        className="block text-white font-medium py-2 px-4 hover:bg-blue-500"
                         onClick={toggleMenu}
                     >
                         Dashboard
                     </Link>
                     <Link
                         to="/transaction"
-                        className="block text-white py-2 px-4 hover:bg-blue-500"
+                        className="block text-white font-medium py-2 px-4 hover:bg-blue-500"
                         onClick={toggleMenu}
                     >
                         Transactions
                     </Link>
                     <Link
                         to="/budget"
-                        className="block text-white py-2 px-4 hover:bg-blue-500"
+                        className="block text-white font-medium py-2 px-4 hover:bg-blue-500"
                         onClick={toggleMenu}
                     >
                         Budgets
                     </Link>
-                    <button onClick={() => setOpenIncomeUpdate(true)} className="block text-white px-4 hover:bg-blue-500">Update salary</button>
-                    <button onClick={() => handleLogout()} className="block text-white py-2 px-4 hover:bg-blue-500">Logout</button>
+                    <button onClick={() => setOpenIncomeUpdate(true)} className="block text-white font-medium px-4 hover:bg-blue-500">Update salary</button>
+                    <button onClick={() => handleLogout()} className="block text-white font-medium py-2 px-4 hover:bg-blue-500">Logout</button>
                 </div>
             )}
         </nav>
