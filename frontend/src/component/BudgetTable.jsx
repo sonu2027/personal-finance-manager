@@ -12,6 +12,7 @@ const BudgetTable = () => {
     const [newBudget, setNewBudget] = useState({ category: '', amount: '' });
     const [editBudget, setEditBudget] = useState(null);
     const [optionId, setOptionId] = useState("")
+    const [oldCategoryName, setOldCategoryName] = useState('')
 
     useEffect(() => {
         fetchBudget()
@@ -47,7 +48,7 @@ const BudgetTable = () => {
                 return;
             }
 
-            updateBudget({ budgetId: editBudget._id, category: editBudget.category, amount: editBudget.amount })
+            updateBudget({ budgetId: editBudget._id, category: editBudget.category, amount: editBudget.amount, oldCategoryName })
                 .then((res) => {
                     setBudgets(
                         budgets.map((budget) =>
@@ -66,7 +67,7 @@ const BudgetTable = () => {
                 return
             }
 
-            if ( newBudget.amount < 1) {
+            if (newBudget.amount < 1) {
                 toast.error('Budget amount should be a valid number greater than 0');
                 return;
             }
@@ -81,15 +82,16 @@ const BudgetTable = () => {
                 })
         }
 
-        setIsModalOpen(false); 
-        setNewBudget({ category: '', amount: '' }); 
-        setEditBudget(null); 
+        setIsModalOpen(false);
+        setNewBudget({ category: '', amount: '' });
+        setEditBudget(null);
     };
 
     // Handle edit button click
     const handleEdit = (budget) => {
         setEditBudget(budget);
         setIsModalOpen(true);
+        setOldCategoryName(budget.category)
     };
 
     const handleDelete = async (id) => {
@@ -112,7 +114,6 @@ const BudgetTable = () => {
 
     return (
         <div className="p-6 bg-gray-100 min-h-screen">
-            <h2 className="text-2xl font-bold text-gray-800 mb-6">Budgets</h2>
 
             {/* Add Budget Button */}
             <button

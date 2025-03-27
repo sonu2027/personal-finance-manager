@@ -1,4 +1,5 @@
 import { Budget } from "../models/budget.model.js";
+import { Transaction } from "../models/transaction.model.js";
 
 const fetchBudget = async (req, res) => {
   console.log("req.user: ", req.user);
@@ -30,7 +31,7 @@ const createBudget = async (req, res) => {
 };
 
 const updateBudget = async (req, res) => {
-  const { budgetId, category, amount } = req.body;
+  const { budgetId, category, amount, oldCategoryName } = req.body;
 
   // Validate input
   if (!budgetId || !category || !amount) {
@@ -42,6 +43,11 @@ const updateBudget = async (req, res) => {
       budgetId,
       { category, amount },
       { new: true }
+    );
+
+    const transaction = await Transaction.updateMany(
+      { category: oldCategoryName },
+      { $set: { category: category } }
     );
 
     if (!updatedBudget) {

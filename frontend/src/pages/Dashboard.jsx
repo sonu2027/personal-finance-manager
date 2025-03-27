@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 import { getIncome } from "../databaseCall/getIncome.js"
 import GetStart from "../component/GetStart.jsx"
 import UpdateIncome from '../component/UpdateIncome.jsx';
+import Loader from '../component/Loader.jsx';
 
 const Dashboard = () => {
   const [transactions, setTransactions] = useState([]);
@@ -132,7 +133,9 @@ const Dashboard = () => {
   ];
 
   if (loading) {
-    return <p>Loading...</p>;
+    return (
+      <Loader/>
+    )
   }
 
   return (
@@ -144,11 +147,9 @@ const Dashboard = () => {
           <div>
             <Navbar setOpenIncomeUpdate={setOpenIncomeUpdate} />
             {
-              openIncomeUpdate && <UpdateIncome setOpenIncomeUpdate={setOpenIncomeUpdate}/>
+              openIncomeUpdate && <UpdateIncome setOpenIncomeUpdate={setOpenIncomeUpdate} />
             }
             <div className="p-6 bg-gray-100 min-h-screen">
-              <h1 className="text-3xl font-bold text-gray-800 mb-6">Dashboard</h1>
-
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 mb-6">
                 <div className="bg-white p-6 rounded-lg shadow-md">
                   <h2 className="text-xl font-semibold text-gray-700">Total Income</h2>

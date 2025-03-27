@@ -8,6 +8,7 @@ const Login = () => {
 
   const [email, setEmail] = useState("")
   const [password, setpassword] = useState("")
+  const [loader, setLoader] = useState(false)
 
   const navigate = useNavigate()
 
@@ -20,6 +21,7 @@ const Login = () => {
 
 
   const handleSubmit = (e) => {
+    setLoader(!loader)
     e.preventDefault();
     loginUser(email, password)
       .then((res) => {
@@ -36,6 +38,7 @@ const Login = () => {
         }
       })
       .catch((error) => {
+        setLoader(!loader)
         toast.error("Something went wrong")
       })
   };
@@ -77,18 +80,27 @@ const Login = () => {
               onChange={(e) => setpassword(e.target.value)}
             />
           </div>
-          <div className='mb-6'>
+          {
+            !loader ?
+              <button
+                type="submit"
+                className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+              >
+                Login
+              </button>
+              :
+              <div
+                className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 flex justify-center items-center"
+              >
+                <div className='h-6 w-6 rounded-full border-4 border-solid border-y-white border-r-white border-l-violet-950 animate-spin'></div>
+              </div>
+          }
+          <div className='mt-6'>
             <div className='flex gap-x-2'>
               <div>Don't have an account?</div>
-              <button className='text-blue-700 font-medium' onClick={() => navigate("/register")}>Register</button>
+              <button className='text-blue-700 font-medium hover:cursor-pointer' onClick={() => navigate("/register")}>Register</button>
             </div>
           </div>
-          <button
-            type="submit"
-            className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-          >
-            Login
-          </button>
         </form>
       </div>
     </div>
