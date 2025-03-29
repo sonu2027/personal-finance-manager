@@ -95,6 +95,16 @@ const Login = () => {
                 <div className='h-6 w-6 rounded-full border-4 border-solid border-y-white border-r-white border-l-violet-950 animate-spin'></div>
               </div>
           }
+          <button
+            type="submit"
+            onClick={() => {
+              setEmail("test@gmail.com")
+              setpassword("hellotest")
+            }}
+            className="mt-3 w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+          >
+            Login as guest
+          </button>
           <div className='mt-6'>
             <div className='flex gap-x-2'>
               <div>Don't have an account?</div>

@@ -109,6 +109,7 @@ const Dashboard = () => {
     value: spendingByCategory[category],
   }));
 
+
   const COLORS = [
     "#FF5733", // Vibrant orange
     "#33FF57", // Bright lime green
@@ -134,7 +135,7 @@ const Dashboard = () => {
 
   if (loading) {
     return (
-      <Loader/>
+      <Loader />
     )
   }
 
@@ -174,38 +175,64 @@ const Dashboard = () => {
                 <div className="bg-white p-6 rounded-lg shadow-md">
                   <h2 className="text-xl font-semibold text-gray-700 mb-4">Spending by Category</h2>
                   <div className='flex justify-center items-center'>
-                    <PieChart width={400} height={screenWidth > 450 ? 350 : 300}>
-                      <Pie
-                        data={chartData}
-                        cx="50%"
-                        cy="50%"
-                        outerRadius={screenWidth > 450 ? 125 : 100}
-                        fill="#8884d8"
-                        dataKey="value"
-                        label
-                      >
-                        {chartData.map((entry, index) => (
-                          <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                        ))}
-                      </Pie>
-                      <Tooltip />
-                      <Legend
-                        layout="horizontal" // Display legend items horizontally
-                        wrapperStyle={{
-                          display: 'flex', // Use flexbox for layout
-                          flexWrap: 'wrap', // Allow wrapping of legend items
-                          justifyContent: 'center', // Center the legend items
-                          width: '100%', // Ensure the legend takes full width
-                          maxWidth: '300px', // Limit the maximum width of the legend
-                          margin: '0 auto', // Center the legend horizontally
-                        }}
-                        formatter={(value, entry, index) => (
-                          <span style={{ width: '33%', textAlign: 'center' }}>
-                            {value} {/* Display the legend item */}
-                          </span>
-                        )}
-                      />
-                    </PieChart>
+                    {
+                      chartData.length > 0 ?
+                        <PieChart width={400} height={screenWidth > 450 ? 350 : 300}>
+                          <Pie
+                            data={chartData}
+                            cx="50%"
+                            cy="50%"
+                            outerRadius={screenWidth > 450 ? 125 : 100}
+                            fill="#8884d8"
+                            dataKey="value"
+                            label
+                          >
+                            {chartData.map((entry, index) => (
+                              <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                            ))}
+                          </Pie>
+                          <Tooltip />
+                          <Legend
+                            layout="horizontal" // Display legend items horizontally
+                            wrapperStyle={{
+                              display: 'flex', // Use flexbox for layout
+                              flexWrap: 'wrap', // Allow wrapping of legend items
+                              justifyContent: 'center', // Center the legend items
+                              width: '100%', // Ensure the legend takes full width
+                              maxWidth: '300px', // Limit the maximum width of the legend
+                              margin: '0 auto', // Center the legend horizontally
+                            }}
+                            formatter={(value, entry, index) => (
+                              <span style={{ width: '33%', textAlign: 'center' }}>
+                                {value} {/* Display the legend item */}
+                              </span>
+                            )}
+                          />
+                        </PieChart>
+                        :
+                        <div className="flex flex-col items-center justify-center h-full p-4 text-center">
+                          <div className="text-gray-500 text-lg mb-2">
+                            No spending data available yet
+                          </div>
+                          <div className="text-gray-400 text-sm">
+                            Start adding your expenses to see the breakdown here
+                          </div>
+                          <svg
+                            className="w-20 h-20 mt-4 text-gray-300"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={1}
+                              d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                            />
+                          </svg>
+                        </div>
+                    }
                   </div>
                 </div>
                 <div className="bg-white p-6 rounded-lg shadow-md">

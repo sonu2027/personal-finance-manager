@@ -10,8 +10,8 @@ function UpdateIncome({ setOpenIncomeUpdate }) {
 
     const handleSaveIncome = () => {
 
-        if (monthlyIncome < 1 || monthlyIncome>10000000) {
-            toast.error("Income should be between 1 and 10000000")
+        if (monthlyIncome < 0 || monthlyIncome>10000000) {
+            toast.error("Income should be between 0 and 10000000")
             return
         }
 
