@@ -56,27 +56,27 @@ const Navbar = ({ setOpenIncomeUpdate }) => {
                 </button>
                 <Link
                     to="/dashboard"
-                    className="block text-white mt-2 mx-2 font-medium py-2 px-4  rounded-sm hover:bg-blue-500"
+                    className="block text-white mt-2 font-medium py-2 px-4 hover:bg-blue-500 border-y-[1px] border-solid border-gray-700"
                     onClick={toggleMenu}
                 >
                     Dashboard
                 </Link>
                 <Link
                     to="/transaction"
-                    className="block text-white rounded-sm font-medium mx-2 py-2 px-4 hover:bg-blue-500"
+                    className="block text-white font-medium py-2 px-4 hover:bg-blue-500 border-b-[1px] border-solid border-gray-700"
                     onClick={toggleMenu}
                 >
                     Transactions
                 </Link>
                 <Link
                     to="/budget"
-                    className="block text-white rounded-sm font-medium mx-2 py-2 px-4 hover:bg-blue-500"
+                    className="block text-white font-medium py-2 px-4 hover:bg-blue-500 border-b-[1px] border-solid border-gray-700"
                     onClick={toggleMenu}
                 >
                     Budgets
                 </Link>
-                <div onClick={() => setOpenIncomeUpdate(true)} className="block text-white font-medium  px-4 py-2 mx-2 rounded-sm hover:bg-blue-500 text-left hover:cursor-pointer">Update salary</div>
-                <div onClick={() => handleLogout()} className="block text-white font-medium py-2 px-4 mx-2 hover:bg-blue-500 rounded-sm text-left hover:cursor-pointer">Logout</div>
+                <div onClick={() => setOpenIncomeUpdate(true)} className="block text-white font-medium  px-4 py-2 hover:bg-blue-500 text-left hover:cursor-pointer border-b-[1px] border-solid border-gray-700">Update salary</div>
+                <div onClick={() => handleLogout()} className="block text-white font-medium py-2 px-4 hover:bg-blue-500 text-left hover:cursor-pointer border-b-[1px] border-solid border-gray-700">Logout</div>
             </div>
         </nav>
     );

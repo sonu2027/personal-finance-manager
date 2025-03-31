@@ -5,6 +5,8 @@ import { createBudget } from '../databaseCall/createBudget';
 import { updateBudget } from '../databaseCall/updateBudget';
 import { deleteBudget } from '../databaseCall/deleteBudget';
 import { SlOptionsVertical } from "react-icons/sl";
+import * as XLSX from "xlsx";
+import { FaFileExcel } from "react-icons/fa";
 
 const BudgetTable = () => {
     const [budgets, setBudgets] = useState([]);
@@ -112,16 +114,39 @@ const BudgetTable = () => {
         }
     })
 
+    const exportToExcel = () => {
+        let data = budgets
+        data.map((e) => {
+            e.updatedAt = new Date(e.updatedAt).toLocaleDateString()
+            e.createdAt = new Date(e.createdAt).toLocaleDateString()
+        })
+
+        const worksheet = XLSX.utils.json_to_sheet(data);
+
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
+
+        XLSX.writeFile(workbook, "exported_data.xlsx");
+    };
+
+
     return (
         <div className="p-6 bg-gray-100 min-h-screen">
 
             {/* Add Budget Button */}
-            <button
-                onClick={() => setIsModalOpen(true)}
-                className="mb-6 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-            >
-                Add Budget
-            </button>
+            <div className='flex justify-between'>
+                <button
+                    onClick={() => setIsModalOpen(true)}
+                    className="mb-6 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                >
+                    Add Budget
+                </button>
+                <button onClick={exportToExcel}
+                    className="mb-6 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 flex gap-x-1 justify-center items-center">
+                    <FaFileExcel className='text-emerald-500'/>
+                    <span>Export </span>
+                </button>
+            </div>
 
             {/* Budget Table */}
             <div className="overflow-x-auto bg-white rounded-lg shadow-md">
