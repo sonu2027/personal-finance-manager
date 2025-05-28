@@ -27,9 +27,11 @@ const Login = () => {
       .then((res) => {
         if (res.message == "Email not found") {
           toast.error("Email not found")
+          setLoader(!loader)
         }
         else if (res.message == "Incorrect password") {
           toast.error("Incorrect password")
+          setLoader(!loader)
         }
         else if (res.token) {
           localStorage.setItem('authToken', res.token);
@@ -70,7 +72,7 @@ const Login = () => {
               <label htmlFor="password" className="block text-sm font-medium text-gray-700">
                 Password
               </label>
-              <button onClick={()=>navigate("/recoverpassword")} className='text-sm font-medium text-blue-600 hover:underline'>Forgot password ?</button>
+              <button onClick={() => navigate("/recoverpassword")} className='text-sm font-medium text-blue-600 hover:underline'>Forgot password ?</button>
             </div>
             <input
               value={password}
