@@ -31,7 +31,7 @@ const Login = () => {
         }
         else if (res.message == "Incorrect password") {
           toast.error("Incorrect password")
-          setLoader(!loader)
+          setLoader(false)
         }
         else if (res.token) {
           localStorage.setItem('authToken', res.token);
