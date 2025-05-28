@@ -5,6 +5,7 @@ import Register from "./pages/Register.jsx"
 import Dashboard from './pages/Dashboard.jsx'
 import Transaction from './pages/Transaction.jsx'
 import Budget from './pages/Budget.jsx'
+import RecoverPassword from './pages/RecoverPassword.jsx'
 
 function Routing() {
     return (
@@ -14,6 +15,7 @@ function Routing() {
             <Route path='/dashboard' element={<Dashboard />} />
             <Route path='/transaction' element={<Transaction />} />
             <Route path='/budget' element={<Budget />} />
+            <Route path='/recoverpassword' element={<RecoverPassword />} />
         </Routes>
     )
 }

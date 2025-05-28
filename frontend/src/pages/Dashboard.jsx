@@ -18,7 +18,7 @@ const Dashboard = () => {
   const [income, setIncome] = useState(0);
   const [openIncomeUpdate, setOpenIncomeUpdate] = useState(false)
 
-  //  Calculate current time only once when the component mounts
+  //  Calculating current time only once when the component mounts
   const currentTime = useMemo(() => Date.now() / 1000, []);
 
   const navigate = useNavigate()
@@ -81,7 +81,7 @@ const Dashboard = () => {
 
     window.addEventListener('resize', handleResize);
 
-    // Cleanup event listener on component unmount
+    // Cleaning up event listener on component unmount
     return () => {
       window.removeEventListener('resize', handleResize);
     };
@@ -154,19 +154,19 @@ const Dashboard = () => {
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 mb-6">
                 <div className="bg-white p-6 rounded-lg shadow-md">
                   <h2 className="text-xl font-semibold text-gray-700">Total Income</h2>
-                  <p className="text-2xl font-bold text-green-600">${totalIncome}</p>
+                  <p className="text-2xl font-bold text-green-600">₹{totalIncome}</p>
                 </div>
                 <div className="bg-white p-6 rounded-lg shadow-md">
                   <h2 className="text-xl font-semibold text-gray-700">Total Expenses</h2>
-                  <p className="text-2xl font-bold text-red-600">${totalExpenses}</p>
+                  <p className="text-2xl font-bold text-red-600">₹{totalExpenses}</p>
                 </div>
                 <div className="bg-white p-6 rounded-lg shadow-md">
                   <h2 className="text-xl font-semibold text-gray-700">Net Balance</h2>
-                  <p className="text-2xl font-bold text-blue-600">${income + totalIncome - totalExpenses}</p>
+                  <p className="text-2xl font-bold text-blue-600">₹{income + totalIncome - totalExpenses}</p>
                 </div>
                 <div className="bg-white p-6 rounded-lg shadow-md">
                   <h2 className="text-xl font-semibold text-gray-700">Monthly salary</h2>
-                  <p className="text-2xl font-bold text-blue-600">${income}</p>
+                  <p className="text-2xl font-bold text-blue-600">₹{income}</p>
                 </div>
               </div>
 

@@ -4,7 +4,9 @@ import {
   sendEmailVerificationOTP,
   loginUser,
   updateIncome,
-  getIncome
+  getIncome,
+  verifyEmail,
+  updatePassword,
 } from "../controllers/user.controller.js";
 import { verifyToken } from "../middlewares/verifyToken.middleware.js";
 
@@ -15,5 +17,7 @@ router.route("/login").post(loginUser);
 router.route("/sendemailverificationotp").post(sendEmailVerificationOTP);
 router.route("/updateincome").put(verifyToken, updateIncome);
 router.route("/getincome").get(verifyToken, getIncome);
+router.route("/verifyemail").post(verifyEmail);
+router.route("/updatepassword").put(updatePassword);
 
 export default router;

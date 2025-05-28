@@ -125,7 +125,7 @@ const sendEmailVerificationOTP = async (req, res) => {
     from: "sonu.mondal.2027@gmail.com",
     to: email,
     subject: "Verify your email",
-    text: `Welcome to the personal finance manager. Please, verify your email by entering the . YourOTP verification OTP is: ${OTP}`,
+    text: `Welcome to the personal finance manager. Please, verify your email by entering the OTP. Your OTP is: ${OTP}`,
   };
 
   console.log("mailOptions: ", mailOptions);
@@ -139,10 +139,53 @@ const sendEmailVerificationOTP = async (req, res) => {
   }
 };
 
+const verifyEmail = async (req, res) => {
+  const { email } = req.body;
+  console.log("req.body: ", req.body);
+
+  try {
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    res.status(200).json({ message: "Email verified successfully" });
+  } catch (error) {
+    console.error("Error verifying email:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+const updatePassword = async (req, res) => {
+  const { email, password } = req.body;
+  console.log("req.body: ", req.body);
+
+  try {
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const response = await User.updateOne(
+      { email },
+      { password: hashedPassword }
+    );
+
+    console.log(response);
+    
+
+    if (response.modifiedCount > 0) {
+      res.status(200).json({ message: "Password updated successfully" });
+    } else {
+      res.status(400).json({ message: "Password update failed" });
+    }
+  } catch (error) {
+    console.error("Error updating password:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
 export {
   registerUser,
   sendEmailVerificationOTP,
   loginUser,
   updateIncome,
   getIncome,
+  verifyEmail,
+  updatePassword,
 };

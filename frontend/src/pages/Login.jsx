@@ -66,9 +66,12 @@ const Login = () => {
             />
           </div>
           <div className="mb-6">
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-              Password
-            </label>
+            <div className='flex justify-between'>
+              <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+                Password
+              </label>
+              <button onClick={()=>navigate("/recoverpassword")} className='text-sm font-medium text-blue-600 hover:underline'>Forgot password ?</button>
+            </div>
             <input
               value={password}
               type="password"

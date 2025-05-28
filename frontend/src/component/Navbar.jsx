@@ -45,6 +45,9 @@ const Navbar = ({ setOpenIncomeUpdate }) => {
                     <Link to="/budget" className="text-white font-medium hover:text-blue-200">
                         Budgets
                     </Link>
+                    <Link to="/recoverpassword" className="text-white font-medium hover:text-blue-200">
+                        Update Password
+                    </Link>
                     <button onClick={() => setOpenIncomeUpdate(true)} className="block text-white font-medium px-4 hover:text-blue-200">Update salary</button>
                     <button onClick={() => handleLogout()} className="block text-white font-medium px-4 hover:text-blue-200">Logout</button>
                 </div>
@@ -74,6 +77,13 @@ const Navbar = ({ setOpenIncomeUpdate }) => {
                     onClick={toggleMenu}
                 >
                     Budgets
+                </Link>
+                <Link
+                    to="/recoverpassword"
+                    className="block text-white font-medium py-2 px-4 hover:bg-blue-500 border-b-[1px] border-solid border-gray-700"
+                    onClick={toggleMenu}
+                >
+                    Update Password
                 </Link>
                 <div onClick={() => setOpenIncomeUpdate(true)} className="block text-white font-medium  px-4 py-2 hover:bg-blue-500 text-left hover:cursor-pointer border-b-[1px] border-solid border-gray-700">Update salary</div>
                 <div onClick={() => handleLogout()} className="block text-white font-medium py-2 px-4 hover:bg-blue-500 text-left hover:cursor-pointer border-b-[1px] border-solid border-gray-700">Logout</div>
