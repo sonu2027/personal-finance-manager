@@ -4,6 +4,7 @@ import toast from 'react-hot-toast';
 import { verifyEmail } from '../databaseCall/verifyEmail.js';
 import { updatePassword } from '../databaseCall/updatePassword.js';
 import { useNavigate } from 'react-router-dom';
+import Navbar from '../component/Navbar.jsx';
 
 function RecoverPassword() {
     const [step, setStep] = useState(1);
@@ -14,6 +15,8 @@ function RecoverPassword() {
     const [rePassword, setRePassword] = useState('');
     const [error, setError] = useState('');
     const [loader, setLoader] = useState(false);
+
+    const [openIncomeUpdate, setOpenIncomeUpdate] = useState(false)
 
     const navigate = useNavigate()
 
@@ -98,77 +101,80 @@ function RecoverPassword() {
     };
 
     return (
-        <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4">
-            <div className="bg-white p-6 rounded shadow-md w-full max-w-sm space-y-4">
-                {step === 1 && (
-                    <div>
-                        <label className="block mb-2 text-sm font-medium text-gray-700">Enter your email</label>
-                        <input
-                            type="email"
-                            className="w-full p-2 border border-gray-300 rounded"
-                            placeholder="example@email.com"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            onKeyDown={handleEmailKeyPress}
-                        />
-                        {
-                            loader && <div className='flex justify-center items-center mt-4'>
-                                <div className='h-8 w-8 rounded-full animate-spin border-2 border-solid border-y-blue-600 border-t-blue-600 font-bold text-4xl'>.</div>
+        <div>
+            <Navbar setOpenIncomeUpdate={setOpenIncomeUpdate} />
+            <div className="flex flex-col items-center justify-center overflow-hidden p-4 mt-16">
+                <div className="bg-gray-50 p-6 rounded shadow-md w-full max-w-sm space-y-4">
+                    {step === 1 && (
+                        <div>
+                            <label className="block mb-2 text-sm font-medium text-blue-600">Enter your email</label>
+                            <input
+                                type="email"
+                                className="w-full p-2 border border-gray-300 rounded focus:outline-blue-600"
+                                placeholder="example@email.com"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                onKeyDown={handleEmailKeyPress}
+                            />
+                            {
+                                loader && <div className='flex justify-center items-center mt-4'>
+                                    <div className='h-8 w-8 rounded-full animate-spin border-2 border-solid border-y-blue-600 border-t-blue-600 font-bold text-4xl'>.</div>
+                                </div>
+                            }
+                        </div>
+                    )}
+
+                    {step === 2 && (
+                        <div>
+                            <label className="block mb-2 text-sm font-medium text-gray-700">Enter OTP sent to your email</label>
+                            <input
+                                type="text"
+                                maxLength={4}
+                                className="w-full p-2 border border-gray-300 rounded"
+                                placeholder="Enter 4-digit OTP"
+                                value={enteredOtp}
+                                onChange={(e) => setEnteredOtp(e.target.value)}
+                            />
+                            {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
+                            <button
+                                className="w-full bg-blue-500 text-white p-2 mt-3 rounded hover:bg-blue-600"
+                                onClick={handleVerifyOtp}
+                            >
+                                Verify OTP
+                            </button>
+                        </div>
+                    )}
+
+                    {step === 3 && (
+                        <div className="space-y-3">
+                            <div>
+                                <label className="block mb-1 text-sm font-medium text-gray-700">Enter Password</label>
+                                <input
+                                    type="password"
+                                    className="w-full p-2 border border-gray-300 rounded"
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                />
                             </div>
-                        }
-                    </div>
-                )}
-
-                {step === 2 && (
-                    <div>
-                        <label className="block mb-2 text-sm font-medium text-gray-700">Enter OTP sent to your email</label>
-                        <input
-                            type="text"
-                            maxLength={4}
-                            className="w-full p-2 border border-gray-300 rounded"
-                            placeholder="Enter 4-digit OTP"
-                            value={enteredOtp}
-                            onChange={(e) => setEnteredOtp(e.target.value)}
-                        />
-                        {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
-                        <button
-                            className="w-full bg-blue-500 text-white p-2 mt-3 rounded hover:bg-blue-600"
-                            onClick={handleVerifyOtp}
-                        >
-                            Verify OTP
-                        </button>
-                    </div>
-                )}
-
-                {step === 3 && (
-                    <div className="space-y-3">
-                        <div>
-                            <label className="block mb-1 text-sm font-medium text-gray-700">Enter Password</label>
-                            <input
-                                type="password"
-                                className="w-full p-2 border border-gray-300 rounded"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                            />
+                            <div>
+                                <label className="block mb-1 text-sm font-medium text-gray-700">Re-enter Password</label>
+                                <input
+                                    type="password"
+                                    className="w-full p-2 border border-gray-300 rounded"
+                                    value={rePassword}
+                                    onChange={(e) => setRePassword(e.target.value)}
+                                />
+                            </div>
+                            {error && <p className="text-red-500 text-sm">{error}</p>}
+                            <button
+                                className="w-full bg-green-500 text-white p-2 rounded hover:bg-green-600"
+                                onClick={handleUpdatePassword}
+                            >
+                                Update Password
+                            </button>
                         </div>
-                        <div>
-                            <label className="block mb-1 text-sm font-medium text-gray-700">Re-enter Password</label>
-                            <input
-                                type="password"
-                                className="w-full p-2 border border-gray-300 rounded"
-                                value={rePassword}
-                                onChange={(e) => setRePassword(e.target.value)}
-                            />
-                        </div>
-                        {error && <p className="text-red-500 text-sm">{error}</p>}
-                        <button
-                            className="w-full bg-green-500 text-white p-2 rounded hover:bg-green-600"
-                            onClick={handleUpdatePassword}
-                        >
-                            Update Password
-                        </button>
-                    </div>
-                )}
+                    )}
+                </div>
             </div>
         </div>
     );

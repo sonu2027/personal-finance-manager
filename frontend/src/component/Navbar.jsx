@@ -1,13 +1,42 @@
-import React, { useState } from 'react';
+import React, { use, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import { RxHamburgerMenu } from "react-icons/rx";
 import { RxCross2 } from "react-icons/rx";
+import { CgProfile } from "react-icons/cg";
+import { useLocation } from 'react-router-dom';
+import { useRef } from 'react';
 
 const Navbar = ({ setOpenIncomeUpdate }) => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [isProfileOpen, setIsProfileOpen] = useState(false);
 
     const navigate = useNavigate()
+    const location = useLocation();
+    const routeRef = useRef([])
+    console.log(location.pathname);
+
+    useEffect(() => {
+        if (location.pathname === "/dashboard") {
+            routeRef.current[0].style.textDecoration = "underline";
+            routeRef.current[0].style.fontSize = "1.2rem";
+            routeRef.current[3].style.background = "blue";
+        }
+        else if (location.pathname === "/transaction") {
+            routeRef.current[1].style.textDecoration = "underline";
+             routeRef.current[1].style.fontSize = "1.2rem";
+            routeRef.current[4].style.background = "blue";
+        }
+        else if (location.pathname === "/budget") {
+            routeRef.current[2].style.textDecoration = "underline";
+             routeRef.current[2].style.fontSize = "1.2rem";
+            routeRef.current[5].style.background = "blue";
+        }
+        else if( location.pathname === "/recoverpassword") {
+             routeRef.current[6].style.background = "blue";
+        }
+    }, [])
+
 
     const toggleMenu = (e) => {
         e.stopPropagation()
@@ -21,7 +50,13 @@ const Navbar = ({ setOpenIncomeUpdate }) => {
 
     window.addEventListener("click", (e) => {
         setIsMenuOpen(false)
+        setIsProfileOpen(false);
     })
+
+    const handleOpenProfile = (e) => {
+        e.stopPropagation();
+        setIsProfileOpen(!isProfileOpen);
+    }
 
     return (
         <nav className="bg-blue-600 p-4 shadow-lg sticky top-0 z-10">
@@ -35,21 +70,31 @@ const Navbar = ({ setOpenIncomeUpdate }) => {
                 }
 
                 {/* Desktop Menu */}
-                <div className="hidden lg:flex space-x-6">
-                    <Link to="/dashboard" className="text-white font-medium hover:text-blue-200">
+                <div className="hidden lg:flex space-x-10">
+                    <Link ref={(e) => routeRef.current[0] = e} to="/dashboard" className="text-white font-medium hover:text-blue-200">
                         Dashboard
                     </Link>
-                    <Link to="/transaction" className="text-white font-medium hover:text-blue-200">
+                    <Link ref={(e) => routeRef.current[1] = e} to="/transaction" className="text-white font-medium hover:text-blue-200">
                         Transactions
                     </Link>
-                    <Link to="/budget" className="text-white font-medium hover:text-blue-200">
+                    <Link ref={(e) => routeRef.current[2] = e} to="/budget" className="text-white font-medium hover:text-blue-200">
                         Budgets
                     </Link>
-                    <Link to="/recoverpassword" className="text-white font-medium hover:text-blue-200">
-                        Update Password
-                    </Link>
-                    <button onClick={() => setOpenIncomeUpdate(true)} className="block text-white font-medium px-4 hover:text-blue-200">Update salary</button>
-                    <button onClick={() => handleLogout()} className="block text-white font-medium px-4 hover:text-blue-200">Logout</button>
+
+                    <div className='flex justify-center items-center text-gray-50'>
+                        <CgProfile onClick={handleOpenProfile} className='text-3xl' />
+                        {
+                            isProfileOpen && (
+                                <div className='absolute top-14 right-6 bg-white text-black p-2 rounded shadow-lg flex flex-col gap-2 items-start'>
+                                    <button onClick={() => navigate("/recoverpassword")} className="text-blue-600 font-medium px-4 hover:text-blue-200">
+                                        Change Password
+                                    </button>
+                                    <button onClick={() => setOpenIncomeUpdate(true)} className="block text-blue-600 font-medium px-4 hover:text-blue-200">Update salary</button>
+                                    <button onClick={() => handleLogout()} className="block text-blue-500 font-medium px-4 hover:text-blue-200">Logout</button>
+                                </div>
+                            )
+                        }
+                    </div>
                 </div>
             </div>
 
@@ -58,6 +103,7 @@ const Navbar = ({ setOpenIncomeUpdate }) => {
                     <RxCross2 onClick={toggleMenu} className="text-white text-3xl hover:cursor-pointer hover:text-blue-600 font-medium" />
                 </button>
                 <Link
+                    ref={(e) => routeRef.current[3] = e}
                     to="/dashboard"
                     className="block text-white mt-2 font-medium py-2 px-4 hover:bg-blue-500 border-y-[1px] border-solid border-gray-700"
                     onClick={toggleMenu}
@@ -65,6 +111,7 @@ const Navbar = ({ setOpenIncomeUpdate }) => {
                     Dashboard
                 </Link>
                 <Link
+                    ref={(e) => routeRef.current[4] = e}
                     to="/transaction"
                     className="block text-white font-medium py-2 px-4 hover:bg-blue-500 border-b-[1px] border-solid border-gray-700"
                     onClick={toggleMenu}
@@ -72,6 +119,7 @@ const Navbar = ({ setOpenIncomeUpdate }) => {
                     Transactions
                 </Link>
                 <Link
+                    ref={(e) => routeRef.current[5] = e}
                     to="/budget"
                     className="block text-white font-medium py-2 px-4 hover:bg-blue-500 border-b-[1px] border-solid border-gray-700"
                     onClick={toggleMenu}
@@ -79,6 +127,7 @@ const Navbar = ({ setOpenIncomeUpdate }) => {
                     Budgets
                 </Link>
                 <Link
+                ref={(e) => routeRef.current[6] = e}
                     to="/recoverpassword"
                     className="block text-white font-medium py-2 px-4 hover:bg-blue-500 border-b-[1px] border-solid border-gray-700"
                     onClick={toggleMenu}
