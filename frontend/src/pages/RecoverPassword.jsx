@@ -100,9 +100,12 @@ function RecoverPassword() {
             })
     };
 
+
     return (
         <div>
-            <Navbar setOpenIncomeUpdate={setOpenIncomeUpdate} />
+            {
+                localStorage.getItem("authToken") && <Navbar setOpenIncomeUpdate={setOpenIncomeUpdate} />
+            }
             <div className="flex flex-col items-center justify-center overflow-hidden p-4 mt-16">
                 <div className="bg-gray-50 p-6 rounded shadow-md w-full max-w-sm space-y-4">
                     {step === 1 && (
