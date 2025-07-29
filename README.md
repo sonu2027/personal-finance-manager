@@ -98,6 +98,7 @@ Frontend
 # API Endpoints
 
 - User <br>
+
 POST /api/auth/register <br>
 Body: { fullName, email, password } <br>
 
@@ -121,7 +122,10 @@ GET /api/user/getincome <br>
 
 GET /api/user/login <br>
 
+
+
 - Transactions <br>
+
 Post /api/transaction/createtransaction <br>
 Body: JSON.stringify(data) <br>
 
@@ -143,7 +147,10 @@ PUT /api/transactions/:id <br>
 
 DELETE /api/transactions/:id <br>
 
+
+
 - Budgets <br>
+
 POST /api/budget/createbudget <br>
 Body: body: JSON.stringify(data) <br>
 
