@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useEffect } from 'react';
 import loginUser from '../databaseCall/loginUser';
 import toast from 'react-hot-toast';
+import { Link } from 'react-router-dom';
 
 const Login = () => {
 
@@ -113,7 +114,9 @@ const Login = () => {
           <div className='mt-6'>
             <div className='flex gap-x-2'>
               <div>Don't have an account?</div>
-              <button className='text-blue-700 font-medium hover:cursor-pointer' onClick={() => navigate("/register")}>Register</button>
+              <Link to="/register">
+                <button className='text-blue-700 font-medium hover:cursor-pointer'>Register</button>
+              </Link>
             </div>
           </div>
         </form>

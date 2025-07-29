@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import * as Yup from 'yup';
 import registerUser from '../databaseCall/registerUser';
 import sendEmailVerificationOTP from '../databaseCall/sendEmailVerificationOTP';
+import { Link } from 'react-router-dom';
 
 const Register = () => {
   const navigate = useNavigate();
@@ -19,17 +20,44 @@ const Register = () => {
   const [otp, setOtp] = useState('');
   const [loader, setLoader] = useState(false)
 
-  // Validation schema using Yup
   const validationSchema = Yup.object().shape({
     fullName: Yup.string()
       .required('Full Name is required')
-      .min(3, 'Full Name must be at least 3 characters'),
+      .min(7, 'Full Name must be at least 7 characters')
+      .max(40, 'Full Name cannot exceed 40 characters')
+      .matches(/^[^\s]+ [^\s]+$/, 'Full Name must have exactly one space between two words')
+      .test(
+        'two-words',
+        'Full Name must contain exactly two words',
+        (value) => !!value && value.trim().split(" ").length === 2
+      )
+      .test(
+        'each-word-length',
+        'Each word must be at least 3 characters and max 15 characters',
+        (value) => {
+          if (!value) return false;
+          const words = value.trim().split(" ");
+          return words.every((w) => w.length >= 3 && w.length <= 15);
+        }
+      ),
+
     email: Yup.string()
-      .email('Invalid email address')
-      .required('Email is required'),
+      .required('Email is required')
+      .matches(
+        /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/,
+        'Email must be in lowercase and valid'
+      ),
+
     password: Yup.string()
       .required('Password is required')
-      .min(8, 'Password must be at least 8 characters'),
+      .min(8, 'Password must be at least 8 characters')
+      .max(15, 'Password cannot exceed 15 characters')
+      .matches(/^(?=.*[a-z])/, 'Password must have at least one lowercase letter')
+      .matches(/^(?=.*[A-Z])/, 'Password must have at least one uppercase letter')
+      .matches(/^(?=.*\d)/, 'Password must have at least one number')
+      .matches(/^(?=.*[!@#$%^&*(),.?":{}|<>])/, 'Password must have at least one special character')
+      .matches(/^\S*$/, 'Password cannot contain spaces'),
+
     confirmPassword: Yup.string()
       .oneOf([Yup.ref('password'), null], 'Passwords must match')
       .required('Confirm Password is required'),
@@ -48,7 +76,6 @@ const Register = () => {
     e.preventDefault();
 
     try {
-      // Validate the form data
       await validationSchema.validate(formData, { abortEarly: false });
 
       if (formData.password !== formData.confirmPassword) {
@@ -207,13 +234,14 @@ const Register = () => {
           <div className="mt-6">
             <div className="flex gap-x-2">
               <div>Have an account?</div>
-              <button
-                type="button"
-                className="text-blue-700 font-medium hover:cursor-pointer"
-                onClick={() => navigate('/login')}
-              >
-                Login
-              </button>
+              <Link to="/login">
+                <button
+                  type="button"
+                  className="text-blue-700 font-medium hover:cursor-pointer"
+                >
+                  Login
+                </button>
+              </Link>
             </div>
           </div>
         </form>
