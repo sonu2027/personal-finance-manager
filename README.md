@@ -30,7 +30,7 @@ Track income, expenses, and budgets in one simple and secure full-stack app.
 - Backend: https://personal-finance-manager-chos.vercel.app
 
 # Folder Structure
-
+```bash
 personal-finance-manager/
 │
 ├── backend/
@@ -72,6 +72,7 @@ personal-finance-manager/
 │ └── vite.config.js # Vite configuration
 │
 └── README.md
+```
 
 # Setup Instructions
 
@@ -96,7 +97,7 @@ Frontend
 
 # API Endpoints
 
-- User
+- User <br>
   POST /api/auth/register <br>
   Body: { fullName, email, password } <br>
 
@@ -120,7 +121,7 @@ GET /api/user/getincome <br>
 
 GET /api/user/login <br>
 
-- Transactions
+- Transactions <br>
   Post /api/transaction/createtransaction <br>
   Body: JSON.stringify(data) <br>
 
@@ -142,7 +143,7 @@ PUT /api/transactions/:id <br>
 
 DELETE /api/transactions/:id <br>
 
-- Budgets
+- Budgets <br>
   POST /api/budget/createbudget <br>
   Body: body: JSON.stringify(data) <br>
 
